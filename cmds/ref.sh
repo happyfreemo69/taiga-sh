@@ -1,5 +1,16 @@
-AT="$1"
-ref="$2"
+for i in "$@";
+do
+case $i in
+    -at=*|--at=*)
+    AT="${i#*=}"
+    shift
+    ;;
+    *)
+        ref="$i"
+    ;;
+esac
+done
+
 if [ -z $ref ];then
     echo "expect a taiga.sh ref {{number}} e.g:"
     echo "taiga.sh ref 4567"
@@ -8,7 +19,7 @@ fi
 
 function process(){
     url=$1
-    a=$(curl -s "$url" -H "Authorization: Bearer "$AT)
+    a=$(curl -s "$url" -H "Authorization: Bearer $AT")
     echo $a|grep -q _error_message
     if [ "$?" -ne 0 ];then
         echo $a

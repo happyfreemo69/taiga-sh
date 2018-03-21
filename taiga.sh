@@ -12,29 +12,24 @@ source ~/.taigarc
 if [ -z $taiga_username ] || [ -z $taiga_password ];then
     help
 fi
-cmds="ref"
+
+cmds="ref at"
 if [ -z "$1" ] || [ $(echo "$cmds"| grep -q "$1"; echo $?) -ne 0 ];then
     echo "expect ./taiga.sh $cmds"
     exit 1
 fi
-
-# fills AT variable
-# @return {[type]} [description]
-function getAt(){
-    username="$1"
-    password="$2"
-    AT=$(curl -s -X POST https://taiga.citylity.com/api/v1/auth \
-     -H 'Content-type: application/json' \
-     --data '{ "type": "normal", "username": "'"$username"'", "password": "'"$password"'" }' \
-     |grep -oE 'auth_token"[^"]+"[^"]+"'|cut -d'"' -f3)
-
-    if [ $(echo -n $AT|wc -c) -lt 5 ];then
-        echo "could not retrieve auth_token, check credentials"
-        exit 1
-    fi   
-}
-
-
+cmd="$1"
+shift
+for i in "$@";
+do
+case $i in
+    -at=*|--at=*)
+    AT="${i#*=}"
+    ;;
+    *)
+    ;;
+esac
+done
 #https://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
 function crossRealpath(){
     TARGET_FILE="$1"
@@ -57,10 +52,21 @@ function crossRealpath(){
     echo $RESULT
 }
 
-
-cmd="$1"
-shift
 exe="$(crossRealpath $0)"
 projdir=$(echo $exe|sed 's:/taiga.sh$::')
-getAt "$taiga_username" "$taiga_password"
-bash $projdir/cmds/"$cmd".sh "$AT" "$@"
+if [ -z $AT ];then
+    AT=$(bash $projdir/cmds/at.sh "$taiga_username" "$taiga_password")
+    args="--at=$AT $@"
+else
+    args="$@"
+fi
+
+if [ $(echo -n $AT|wc -c) -lt 5 ];then
+    echo "could not retrieve auth_token, check credentials"
+    exit 1
+fi
+if [ "$cmd" == "at" ];then
+    echo $AT
+    exit 0;
+fi
+bash $projdir/cmds/"$cmd".sh $args
