@@ -57,8 +57,10 @@ function crossRealpath(){
     echo $RESULT
 }
 
+
 cmd="$1"
 shift
 exe="$(crossRealpath $0)"
+projdir=$(echo $exe|sed 's:/taiga.sh$::')
 getAt "$taiga_username" "$taiga_password"
-bash $(dirname exe)/cmds/"$cmd".sh "$AT" "$@"
+bash $projdir/cmds/"$cmd".sh "$AT" "$@"
