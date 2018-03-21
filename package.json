@@ -1,6 +1,6 @@
 {
-    "name": "taiga",
-    "version": "1.0.0",
+    "name": "taiga-sh",
+    "version": "1.0.1",
     "description": "taiga cli",
     "author": "mpech",
     "private": true,
