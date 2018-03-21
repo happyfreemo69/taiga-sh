@@ -1,0 +1,8 @@
+{
+    "name": "taiga",
+    "version": "1.0.0",
+    "description": "taiga cli",
+    "author": "mpech",
+    "private": true,
+    "license": "MIT"
+}
