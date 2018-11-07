@@ -1,6 +1,6 @@
 #!/bin/bash
 function help(){
-    echo "create taigarc with content below"
+    echo "create ~/.taigarc with content below"
     echo taiga_username=xxx
     echo taiga_password=yy;
     exit 1

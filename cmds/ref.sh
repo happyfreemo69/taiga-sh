@@ -19,7 +19,7 @@ fi
 
 function process(){
     url=$1
-    a=$(curl -s "$url" -H "Authorization: Bearer $AT")
+    a=$(curl -4 -s "$url" -H "Authorization: Bearer $AT")
     echo $a|grep -q _error_message
     if [ "$?" -ne 0 ];then
         echo $a
